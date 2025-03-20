@@ -1,0 +1,13 @@
+analytics_engineering_template:
+  outputs:
+    dev:
+      type: duckdb
+      path: "/workspaces/{{ env_var('REPO_NAME') }}/duckdb/analytics.duckdb"
+      attach:
+        - type: duckdb
+          path: "/workspaces/{{ env_var('REPO_NAME') }}/duckdb/raw_data.duckdb"
+          read_only: true
+      schema: analytics
+      threads: 4
+
+  target: dev
