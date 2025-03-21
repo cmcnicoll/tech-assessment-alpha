@@ -1,0 +1,72 @@
+version: 2
+
+models:
+  - name: stg_alpha__brands
+    description: One record per unique combination of brand_name and barcode
+    columns:
+      - name: brand_id
+        data_tests: &not_null_unique
+          - not_null
+          - unique
+      - name: data_load_key
+        data_tests: *not_null_unique
+      - name: brand_name
+        data_tests: &not_null
+          - not_null
+      - name: barcode
+        data_tests: *not_null
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - brand_name
+            - barcode
+
+  - name: stg_alpha__receipt_items
+    description: One record per receipt item
+    columns:
+      - name: parent_data_load_key
+        data_tests: *not_null
+      - name: data_load_key
+        data_tests: *not_null_unique
+      - name: barcode
+        data_tests:
+          - relationships:
+              to: ref('stg_alpha__brands')
+              field: barcode
+              config: &warn
+                severity: warn
+      - name: brand_code
+        data_tests:
+          - relationships:
+              to: ref('stg_alpha__brands')
+              field: brand_code
+              config: *warn
+      - name: parent_data_load_index
+        data_tests: *not_null
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - parent_data_load_key
+            - parent_data_load_index
+
+  - name: stg_alpha__receipts
+    description: One record per receipt
+    columns:
+      - name: receipt_id
+        data_tests: *not_null_unique
+      - name: user_id
+        data_tests:
+          - relationships:
+              to: ref('stg_alpha__users')
+              field: user_id
+              config: *warn
+      - name: data_load_key
+        data_tests: *not_null_unique
+
+  - name: stg_alpha__users
+    description: One record per user
+    columns:
+      - name: user_id
+        data_tests: *not_null_unique
+      - name: data_load_key
+        data_tests: *not_null_unique

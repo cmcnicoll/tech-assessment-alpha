@@ -1,0 +1,16 @@
+version: 2
+
+sources:
+  - name: alpha
+    database: raw_data
+    schema: alpha
+    description: Raw rewards app data (data loaded and schema inferred by dlt)
+    tables:
+      - name: brands
+        description: Raw brand data
+      - name: receipts
+        description: Raw receipt data
+      - name: receipts__rewards_receipt_item_list
+        description: Raw receipt item data (nested inside receipt data)
+      - name: users
+        description: Raw user data
