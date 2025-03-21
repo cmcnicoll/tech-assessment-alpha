@@ -15,7 +15,7 @@ lint:
 	cd dbt && sqlfluff lint .
 
 load:
-	cd dlt && python3 jaffle_pipelines.py
+	cd dlt && python3 alpha_pipelines.py
 
 query:
 	harlequin "duckdb/raw_data.duckdb" "duckdb/analytics.duckdb"
