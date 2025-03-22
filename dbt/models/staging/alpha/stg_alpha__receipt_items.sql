@@ -15,7 +15,7 @@ with
             _dlt_id as data_load_key,
 
             -- strings
-            barcode,
+            coalesce(barcode, '(No Code)') as barcode,
             description as receipt_item_description,
             user_flagged_barcode,
             needs_fetch_review_reason,
@@ -24,7 +24,7 @@ with
             user_flagged_description,
             original_meta_brite_barcode,
             original_meta_brite_description,
-            brand_code,
+            coalesce(brand_code, '(No Code)') as brand_code,
             competitor_rewards_group,
             original_receipt_item_text,
             item_number,

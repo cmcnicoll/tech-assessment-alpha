@@ -34,3 +34,97 @@ This template helps apply [analytics engineering](https://www.getdbt.com/blog/wh
 - [sqlfluff](https://github.com/sqlfluff/sqlfluff)
 - [sqlfmt](https://github.com/tconbeer/sqlfmt)
 - [vscode-dbt-power-user](https://github.com/AltimateAI/vscode-dbt-power-user)
+
+## Entity Relationship Diagram
+
+```mermaid
+erDiagram
+    USER {
+        string user_id PK
+        string data_load_key UK
+        string user_role
+        string sign_up_source
+        string sign_up_state
+        string data_load_id
+        boolean is_active
+        datetime created_at
+        datetime last_login_at
+    }
+
+    BRAND {
+        string brand_code PK
+        string barcode PK
+        string brand_id UK
+        string cpg_id
+        string data_load_key UK
+        string brand_name
+        string brand_category
+        string brand_category_code
+        string cpg_ref
+        string data_load_id
+        boolean is_top_brand
+    }
+
+    RECEIPT {
+        string data_load_key PK
+        string receipt_id UK
+        string user_id FK
+        string bonus_points_earned_reason
+        string rewards_receipt_status
+        string data_load_id
+        decimal bonus_points_earned
+        decimal total_points_earned
+        int purchased_item_count
+        decimal total_spent
+        datetime created_at
+        datetime scanned_at
+        datetime finished_at
+        datetime modified_at
+        datetime points_awarded_at
+        datetime purchased_at
+    }
+
+    RECEIPT_ITEM {
+        string data_load_key PK
+        string partner_item_id
+        string points_payer_id
+        string rewards_product_partner_id
+        string parent_data_load_key FK
+        string barcode FK
+        string receipt_item_description
+        string user_flagged_barcode
+        string needs_fetch_review_reason
+        string points_not_awarded_reason
+        string rewards_group
+        string user_flagged_description
+        string original_meta_brite_barcode
+        string original_meta_brite_description
+        string brand_code FK
+        string competitor_rewards_group
+        string original_receipt_item_text
+        string item_number
+        string metabrite_campaign_id
+        decimal final_price
+        decimal item_price
+        int quantity_purchased
+        decimal user_flagged_price
+        int user_flagged_quantity
+        decimal discounted_item_price
+        int original_meta_brite_quantity_purchased
+        decimal points_earned
+        decimal target_price
+        decimal original_final_price
+        decimal original_meta_brite_item_price
+        decimal price_after_coupon
+        int parent_data_load_index
+        boolean is_review_required_by_fetch
+        boolean is_target_gap_points_blocked
+        boolean is_flagged_as_new_by_user
+        boolean is_competitive_product
+        boolean is_deleted
+    }
+
+    USER ||..o{ RECEIPT : "creates"
+    RECEIPT ||--o{ RECEIPT_ITEM : "contains"
+    BRAND ||..o{ RECEIPT_ITEM : "appears on"
+```

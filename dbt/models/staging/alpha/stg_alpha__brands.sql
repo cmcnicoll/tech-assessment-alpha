@@ -24,6 +24,22 @@ with
 
         from source
 
+        union all
+
+        -- dummy record
+        select
+            '(Unknown Brand)',
+            null,
+            '(Unknown Brand)',
+            '(Unknown Brand)',
+            '(No Code)',
+            '(Unknown Brand)',
+            '(Unknown Brand)',
+            '(No Code)',
+            null,
+            null,
+            false
+
     )
 
 select *
