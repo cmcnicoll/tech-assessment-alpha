@@ -8,6 +8,7 @@ with
             -- ids
             _id___oid as brand_id,
             cpg___id___oid as cpg_id,
+            barcode,
             _dlt_id as data_load_key,
 
             -- strings
@@ -15,30 +16,27 @@ with
             coalesce(brand_code, '(No Code)') as brand_code,
             coalesce(category, '(No Category)') as brand_category,
             coalesce(category_code, '(No Code)') as brand_category_code,
-            barcode,
             cpg___ref as cpg_ref,
             _dlt_load_id as data_load_id,
 
             -- booleans
-            coalesce(top_brand, false) as is_top_brand
+            coalesce(top_brand, false) as is_top_brand,
+
+            -- temp workaround for missing barcodes
+            row_number() over (
+                partition by brand_code order by is_top_brand desc, brand_id
+            ) as brand_code_rank
 
         from source
 
-        union all
-
-        -- dummy record
-        select
-            '(Unknown Brand)',
-            null,
-            '(Unknown Brand)',
-            '(Unknown Brand)',
-            '(No Code)',
-            '(Unknown Brand)',
-            '(Unknown Brand)',
-            '(No Code)',
-            null,
-            null,
-            false
+        -- remove duplicates
+        qualify
+            (
+                row_number() over (
+                    partition by barcode order by is_top_brand desc, brand_id
+                )
+                = 1
+            )
 
     )
 

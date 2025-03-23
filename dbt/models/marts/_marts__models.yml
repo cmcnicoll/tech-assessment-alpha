@@ -1,0 +1,16 @@
+version: 2
+
+models:
+  - name: fct_receipt_items
+    description: >
+      One Big Table with brand, user, receipt and receipt item data.
+
+      One record per receipt item.
+    columns:
+      - name: data_load_key
+        data_tests: &not_null_unique
+          - not_null
+          - unique
+    tests:
+      - dbt_utils.equal_rowcount:
+          compare_model: ref('stg_alpha__receipt_items')

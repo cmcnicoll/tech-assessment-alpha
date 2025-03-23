@@ -16,11 +16,11 @@ with
             _dlt_load_id as data_load_id,
 
             -- booleans
-            active as is_active,
+            active as is_active_user,
 
             -- timestamps
-            epoch_ms(created_date___date) as created_at,
-            epoch_ms(last_login___date) as last_login_at
+            epoch_ms(created_date___date) as user_created_at,
+            epoch_ms(last_login___date) as user_last_login_at
 
         from source
 
@@ -28,7 +28,8 @@ with
         qualify
             (
                 row_number() over (
-                    partition by user_id order by last_login_at desc, data_load_key
+                    partition by user_id
+                    order by user_last_login_at desc, user_created_at, data_load_key
                 )
                 = 1
             )

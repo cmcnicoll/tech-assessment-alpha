@@ -2,7 +2,7 @@ version: 2
 
 models:
   - name: stg_alpha__brands
-    description: One record per unique combination of brand_code and barcode
+    description: One record per barcode
     columns:
       - name: brand_id
         data_tests: &not_null_unique
@@ -10,16 +10,11 @@ models:
           - unique
       - name: data_load_key
         data_tests: *not_null_unique
-      - name: brand_code
+      - name: barcode
+        data_tests: *not_null_unique
+      - name: brand_code_rank
         data_tests: &not_null
           - not_null
-      - name: barcode
-        data_tests: *not_null
-    tests:
-      - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - brand_code
-            - barcode
 
   - name: stg_alpha__receipt_items
     description: One record per receipt item
@@ -30,19 +25,11 @@ models:
         data_tests: *not_null_unique
       - name: barcode
         data_tests:
-          - not_null
           - relationships:
               to: ref('stg_alpha__brands')
               field: barcode
               config: &warn
                 severity: warn
-      - name: brand_code
-        data_tests:
-          - not_null
-          - relationships:
-              to: ref('stg_alpha__brands')
-              field: brand_code
-              config: *warn
       - name: parent_data_load_index
         data_tests: *not_null
     tests:

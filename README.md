@@ -46,23 +46,24 @@ erDiagram
         string sign_up_source
         string sign_up_state
         string data_load_id
-        boolean is_active
-        datetime created_at
-        datetime last_login_at
+        boolean is_active_user
+        datetime user_created_at
+        datetime user_last_login_at
     }
 
     BRAND {
-        string brand_code PK
         string barcode PK
         string brand_id UK
         string cpg_id
         string data_load_key UK
         string brand_name
+        string brand_code
         string brand_category
         string brand_category_code
         string cpg_ref
         string data_load_id
         boolean is_top_brand
+        int brand_code_rank
     }
 
     RECEIPT {
@@ -76,12 +77,12 @@ erDiagram
         decimal total_points_earned
         int purchased_item_count
         decimal total_spent
-        datetime created_at
-        datetime scanned_at
-        datetime finished_at
-        datetime modified_at
-        datetime points_awarded_at
-        datetime purchased_at
+        datetime receipt_created_at
+        datetime receipt_scanned_at
+        datetime receipt_finished_at
+        datetime receipt_modified_at
+        datetime receipt_points_awarded_at
+        datetime receipt_purchased_at
     }
 
     RECEIPT_ITEM {

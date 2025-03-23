@@ -24,12 +24,12 @@ with
             cast(total_spent as decimal(18, 2)) as total_spent,
 
             -- timestamps
-            epoch_ms(create_date___date) as created_at,
-            epoch_ms(date_scanned___date) as scanned_at,
-            epoch_ms(finished_date___date) as finished_at,
-            epoch_ms(modify_date___date) as modified_at,
-            epoch_ms(points_awarded_date___date) as points_awarded_at,
-            epoch_ms(purchase_date___date) as purchased_at
+            epoch_ms(create_date___date) as receipt_created_at,
+            epoch_ms(date_scanned___date) as receipt_scanned_at,
+            epoch_ms(finished_date___date) as receipt_finished_at,
+            epoch_ms(modify_date___date) as receipt_modified_at,
+            epoch_ms(points_awarded_date___date) as receipt_points_awarded_at,
+            epoch_ms(purchase_date___date) as receipt_purchased_at
 
         from source
 
