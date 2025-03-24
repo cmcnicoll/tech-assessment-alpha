@@ -1,6 +1,6 @@
-## Analytics Engineering Template
+## Technical Assessment Alpha
 
-This template helps apply [analytics engineering](https://www.getdbt.com/blog/what-is-analytics-engineering) best practices when working with raw data on your local machine, such as financial statements downloaded as CSV. It can also be used for technical assessments when interviewing for data jobs.
+This repo demonstrates how I approach data projects, reason about data, and communicate my understanding of a dataset.
 
 ## Prerequisites
 - [Docker Desktop](https://www.docker.com/)
@@ -8,32 +8,41 @@ This template helps apply [analytics engineering](https://www.getdbt.com/blog/wh
 - Dev Containers extension (Identifier: `ms-vscode-remote.remote-containers`)
 - Create an environment variable `LOCAL_DATA_PATH` for the path to the folder containing the raw data you want to load, transform, and analyze. This folder will be mounted to the dev container.
 
-## Demo
-1. Use this template to create a repository.
-2. Clone your new repository.
-3. Open the repository in VS Code.
-4. **Reopen in Container**.
-5. Open **View > Terminal**.
-6. Run: ```make run```
+## Getting Started
 
-## Original Inspiration
-- [Modern Data Stack in a Box](https://duckdb.org/2022/10/12/modern-data-stack-in-a-box.html)
-- [nba-monte-carlo](https://github.com/matsonj/nba-monte-carlo)
+For the project to run, the assessment's sample data files must be downloaded and staged locally in the `alpha` folder:
 
-## Other Inspirations
-- [dbt-labs/jaffle-shop](https://github.com/dbt-labs/jaffle-shop)
-- [jwills/nba_monte_carlo](https://github.com/jwills/nba_monte_carlo)
-- [l-mds/local-data-stack](https://github.com/l-mds/local-data-stack)
+```
+LOCAL_DATA_PATH
+  alpha
+    brands.json.gz
+    receipts.json.gz
+    users.json.gz
+```
 
-## Tools Used
-- [dbt-core](https://github.com/dbt-labs/dbt-core)
-- [dbt-duckdb](https://github.com/duckdb/dbt-duckdb)
-- [dlt](https://github.com/dlt-hub/dlt)
-- [duckdb](https://github.com/duckdb/duckdb)
-- [harlequin](https://github.com/tconbeer/harlequin)
-- [sqlfluff](https://github.com/sqlfluff/sqlfluff)
-- [sqlfmt](https://github.com/tconbeer/sqlfmt)
-- [vscode-dbt-power-user](https://github.com/AltimateAI/vscode-dbt-power-user)
+These files are not included in this repo.
+
+### Patching `users.json`
+
+The `users.json` file is corrupt and must be manually patched:
+
+1. Unzip `users.json.gz` to `users.json`.
+2. Create `temp_users.json` and manually copy/paste the contents from `users.json`.
+3. Delete `users.json.gz` and `users.json`.
+4. Rename `temp_users.json` to `users.json`.
+
+### Running the Project
+
+1. Clone this repository.
+2. Open the repository in VS Code.
+3. **Reopen in Container**.
+4. Open **View > Terminal**.
+5. Run: ```make run```
+
+### Notes
+
+- The corrupt `users.json` file was an interesting challenge. Initially, I tried fixing it with Python, but the issue wasn't obvious. Troubleshooting revealed that the data itself was fine, so I applied a manual patch.
+- I used local branches and squashed commits before merging/pushing to `main`. If I had used pull requests, I would have used draft PRs and squashed commits.
 
 ## Entity Relationship Diagram
 
@@ -130,6 +139,40 @@ erDiagram
     BRAND ||..o{ RECEIPT_ITEM : "appears on"
 ```
 
+### Notes
+
+- Instead of manually inspecting unstructured data, I prioritized loading it into DuckDB to begin modeling in dbt.
+- I prefer learning datasets by creating staging models, iterating on production deliverables simultaneously.
+- The diagram was created after my initial staging models and updated as I refined them.
+
+## Stakeholder Questions
+
+### Queries
+
+- [Top Brands by Receipts Scanned (Most Recent Month)](dbt/analyses/top_brands_by_receipts_scanned__most_recent_month.sql)
+- [Rewards Receipt Status: Finished vs. Rejected](dbt/analyses/rewards_receipt_status__finished_vs_rejected.sql)
+- [Top Brands by Spend and Receipts (Users Created in Last Six Months)](dbt/analyses/top_brands_by_spend_and_receipts__user_created_in_last_six_months.sql)
+
+### Notes
+
+- Once I created the One Big Table (OBT) core model, analysis queries were straightforward.
+- I considered creating additional core models referencing the OBT but deemed it out of scope.
+- The dbt Power User extension makes model and analysis creation easy, allowing iterative query execution with `CTRL + Enter`.
+
+## Data Quality Issues
+
+### Queries
+
+- [Duplicate Users](dbt/analyses/data_quality__duplicate_users.sql)
+- [Missing Users](dbt/analyses/data_quality__missing_users.sql)
+- [Duplicate Barcodes](dbt/analyses/data_quality__duplicate_barcodes.sql)
+- [Missing Barcodes](dbt/analyses/data_quality__missing_barcodes.sql)
+
+### Notes
+
+- Identifying and addressing data quality issues while creating staging models is second nature to me, following my usual routine of scrubbing, deduplicating, and implementing data tests.
+- As I built the core model and analysis queries, I refined the staging models and gained a better understanding of major vs. minor issues.
+
 ## Email to Stakeholder
 
 Subject: Data Updates and Open Questions
@@ -160,9 +203,9 @@ I've been working on answering your outstanding questions while also building a 
 
 I also have a few questions before creating engineering tickets and would appreciate your input:
 
-- **`rewardsReceiptStatus`**: Should we compare Finished vs. Rejected?
+- **`rewardsReceiptStatus`**: Please confirm that we are comparing Finished vs. Rejected?
 - **Corrupt `users.json` sample**: I manually patched it, but we need to identify the root cause.
-- **Duplicate or missing users**: Are these known issues? I implemented a workaround for duplicates, but missing users will affect analyses.
+- **Duplicate or missing users**: Are these known issues? I implemented a workaround for duplicates, but missing users will affect our analyses.
 - **Duplicate or missing barcodes in the brands table**: Are these known issues? I handled duplicates, but I think missing barcodes are a major issue, so I added temporary mitigations and data quality warnings.
 
 If these issues are minor, we can move forward with releasing the changes as-is. I structured the single source of truth using the One Big Table approach, but I have some concerns about production performance. We can explore adding incremental logic if needed.
@@ -171,3 +214,7 @@ Let me know if you’d like to discuss async on Slack or hop on a quick call.
 
 Thanks,<br>
 Curtis
+
+### Notes
+
+- I maintained a running list of key points to mention in the stakeholder email, making the final write-up straightforward.
