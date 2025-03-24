@@ -5,12 +5,17 @@ models:
     description: >
       One Big Table with brand, user, receipt and receipt item data.
 
-      One record per receipt item.
-    columns:
-      - name: data_load_key
-        data_tests: &not_null_unique
-          - not_null
-          - unique
+      One record per receipt with no items or one record per receipt item.
     tests:
-      - dbt_utils.equal_rowcount:
-          compare_model: ref('stg_alpha__receipt_items')
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - receipt_id
+            - data_load_key
+      - dbt_expectations.expect_column_distinct_count_to_equal_other_table:
+          column_name: receipt_id
+          compare_model: ref("stg_alpha__receipts")
+          compare_column_name: receipt_id
+      - dbt_expectations.expect_column_distinct_count_to_equal_other_table:
+          column_name: data_load_key
+          compare_model: ref("stg_alpha__receipt_items")
+          compare_column_name: data_load_key

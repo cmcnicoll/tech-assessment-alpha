@@ -1,11 +1,11 @@
 with
-    receipt_items as (select * from {{ ref("stg_alpha__receipt_items") }}),
-
     receipts as (select * from {{ ref("stg_alpha__receipts") }}),
 
-    brands as (select * from {{ ref("stg_alpha__brands") }}),
+    receipt_items as (select * from {{ ref("stg_alpha__receipt_items") }}),
 
     users as (select * from {{ ref("stg_alpha__users") }}),
+
+    brands as (select * from {{ ref("stg_alpha__brands") }}),
 
     joined as (
 
@@ -40,13 +40,13 @@ with
                 parent_data_load_key, brand_code, barcode, is_deleted
             )
 
-        from receipt_items
+        from receipts
 
-        inner join
-            receipts on (receipt_items.parent_data_load_key = receipts.data_load_key)
-
-        left join brands on (receipt_items.barcode = brands.barcode)
+        left join
+            receipt_items
+            on (receipts.data_load_key = receipt_items.parent_data_load_key)
         left join users on (receipts.user_id = users.user_id)
+        left join brands on (receipt_items.barcode = brands.barcode)
 
         -- temp workaround for missing barcodes
         left join
