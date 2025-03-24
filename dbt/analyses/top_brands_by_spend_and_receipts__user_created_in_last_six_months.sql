@@ -27,10 +27,10 @@ with
             *,
 
             row_number() over (
-                order by sum_final_price desc, brand_code
+                order by sum_final_price desc, brand_code asc
             ) as sum_final_price_rank,
             row_number() over (
-                order by receipt_count desc, brand_code
+                order by receipt_count desc, brand_code asc
             ) as receipt_count_rank
 
         from aggregate_by_brand_and_filter_by_user_created_at

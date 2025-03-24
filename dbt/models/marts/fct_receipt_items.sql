@@ -10,21 +10,21 @@ with
     joined as (
 
         select
-            coalesce(brands.brand_id, temp.brand_id) as brand_id,
-            coalesce(brands.cpg_id, temp.cpg_id) as cpg_id,
-            coalesce(brands.brand_name, temp.brand_name, '(Unknown)') as brand_name,
+            coalesce(brands.brand_id, tmp.brand_id) as brand_id,
+            coalesce(brands.cpg_id, tmp.cpg_id) as cpg_id,
+            coalesce(brands.brand_name, tmp.brand_name, '(Unknown)') as brand_name,
             coalesce(
                 brands.brand_code, receipt_items.brand_code, '(No Code)'
             ) as brand_code,
             coalesce(
-                brands.brand_category, temp.brand_category, '(Unknown)'
+                brands.brand_category, tmp.brand_category, '(Unknown)'
             ) as brand_category,
             coalesce(
-                brands.brand_category_code, temp.brand_category_code, '(Unknown)'
+                brands.brand_category_code, tmp.brand_category_code, '(Unknown)'
             ) as brand_category_code,
             coalesce(receipt_items.barcode, '(No Code)') as barcode,
-            coalesce(brands.cpg_ref, temp.cpg_ref) as cpg_ref,
-            coalesce(brands.is_top_brand, temp.is_top_brand, false) as is_top_brand,
+            coalesce(brands.cpg_ref, tmp.cpg_ref) as cpg_ref,
+            coalesce(brands.is_top_brand, tmp.is_top_brand, false) as is_top_brand,
 
             receipts.user_id,
             coalesce(users.user_role, '(Unknown)') as user_role,
@@ -50,9 +50,9 @@ with
 
         -- temp workaround for missing barcodes
         left join
-            brands as temp
-            on (receipt_items.brand_code = temp.brand_code)
-            and (temp.brand_code_rank = 1)
+            brands as tmp
+            on (receipt_items.brand_code = tmp.brand_code)
+            and (tmp.brand_code_rank = 1)
 
     )
 

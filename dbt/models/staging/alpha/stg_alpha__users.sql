@@ -29,7 +29,8 @@ with
             (
                 row_number() over (
                     partition by user_id
-                    order by user_last_login_at desc, user_created_at, data_load_key
+                    order by
+                        user_last_login_at desc, user_created_at asc, data_load_key asc
                 )
                 = 1
             )

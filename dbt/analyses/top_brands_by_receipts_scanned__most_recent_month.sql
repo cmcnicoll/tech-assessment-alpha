@@ -22,7 +22,7 @@ with
 
             row_number() over (
                 partition by receipt_scanned_month
-                order by receipt_count desc, brand_code
+                order by receipt_count desc, brand_code asc
             ) as brand_rank
 
         from count_receipts_by_brand_and_scanned_month
@@ -35,10 +35,12 @@ with
             *,
 
             lag(brand_rank) over (
-                partition by brand_code order by receipt_scanned_month
+                partition by brand_code  --
+                order by receipt_scanned_month
             ) as prev_brand_rank,
             lag(receipt_count) over (
-                partition by brand_code order by receipt_scanned_month
+                partition by brand_code  --
+                order by receipt_scanned_month
             ) as prev_receipt_count
 
         from rank_brands_by_receipts_scanned_per_month

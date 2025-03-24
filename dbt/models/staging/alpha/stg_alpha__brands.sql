@@ -24,7 +24,8 @@ with
 
             -- temp workaround for missing barcodes
             row_number() over (
-                partition by brand_code order by is_top_brand desc, brand_id
+                partition by brand_code  --
+                order by is_top_brand desc, brand_id asc
             ) as brand_code_rank
 
         from source
@@ -33,7 +34,8 @@ with
         qualify
             (
                 row_number() over (
-                    partition by barcode order by is_top_brand desc, brand_id
+                    partition by barcode  --
+                    order by is_top_brand desc, brand_id asc
                 )
                 = 1
             )
